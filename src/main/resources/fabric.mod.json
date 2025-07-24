@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "properping-fabric",
+	"version": "${version}",
+	"name": "ProperPing-fabric",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"license": "MIT",
+	"icon": "assets/properping-fabric/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.carloshmfs.ProperPingfabric"
+		],
+		"client": [
+			"dev.carloshmfs.ProperPingfabricClient"
+		]
+	},
+	"mixins": [
+		"properping-fabric.mixins.json",
+		{
+			"config": "properping-fabric.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.14",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
