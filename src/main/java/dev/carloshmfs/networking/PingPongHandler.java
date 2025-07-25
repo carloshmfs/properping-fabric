@@ -17,4 +17,8 @@ public class PingPongHandler {
             ServerPlayNetworking.send(player, new PingPacketS2C(PacketByteBufs.empty()));
         }
     }
+
+    public static void handlePong(final ServerPlayer player) {
+
+    }
 }

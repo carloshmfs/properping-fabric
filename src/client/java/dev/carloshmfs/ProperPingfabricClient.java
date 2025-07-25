@@ -1,8 +1,10 @@
 package dev.carloshmfs;
 
 import dev.carloshmfs.networking.packets.PingPacketS2C;
+import dev.carloshmfs.networking.packets.PongPacketC2S;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.player.LocalPlayer;
 
@@ -11,6 +13,7 @@ public class ProperPingfabricClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(PingPacketS2C.TYPE, (PingPacketS2C packet, LocalPlayer player, PacketSender responseSender) -> {
 			ProperPingfabric.LOGGER.info(packet.example);
+			ClientPlayNetworking.send(new PongPacketC2S(PacketByteBufs.empty()));
 		});
 	}
 }
