@@ -25,18 +25,30 @@ public class PingPongHandler {
         LatencyInfo latencyInfo = getPlayerLatencyInfo(playerUUID);
 
         long currentTime = Util.getMillis();
-        if (currentTime % 5 == 0) {
+        if (currentTime - latencyInfo.pingTime >= 1000 && !latencyInfo.isPending) {
+            latencyInfo.isPending = true;
+            latencyInfo.pingTime = currentTime;
+            latencyInfo.challenge = currentTime;
+
             FriendlyByteBuf buf = PacketByteBufs.create();
             buf.writeLong(currentTime);
             ServerPlayNetworking.send(player, ProperPingfabric.PING_S2C_PACKET_ID, buf);
+
+            latencyInfoCache.put(playerUUID, latencyInfo);
         }
     }
 
     public static void handlePong(final ServerPlayer player, long originalTime) {
-        long latency = Util.getMillis() - originalTime;
+        int latency = (int) (Util.getMillis() - originalTime);
         UUID playerUUID = player.getUUID();
         LatencyInfo latencyInfo = getPlayerLatencyInfo(playerUUID);
 
+        if (latencyInfo.isPending && latencyInfo.challenge == originalTime) {
+            latencyInfo.isPending = false;
+            latencyInfo.RTT_QUEUE.add(latency);
+            player.latency = latencyInfo.calculateAverageLatency();
+            ProperPingfabric.LOGGER.info(player.getName().getString() + " PING: " + player.latency + "ms");
+        }
     }
 
     private static LatencyInfo getPlayerLatencyInfo(UUID playerUUID) {
