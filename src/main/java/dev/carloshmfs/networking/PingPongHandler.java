@@ -32,6 +32,7 @@ public class PingPongHandler {
 
             FriendlyByteBuf buf = PacketByteBufs.create();
             buf.writeLong(currentTime);
+            buf.writeInt(latencyInfo.averageLatency);
             ServerPlayNetworking.send(player, ProperPingfabric.PING_S2C_PACKET_ID, buf);
 
             latencyInfoCache.put(playerUUID, latencyInfo);
