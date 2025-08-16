@@ -28,8 +28,24 @@ public class PingOverlay {
 
         int latency = this.minecraft.player.getGameProfile().getName().equalsIgnoreCase(playerInfo.getProfile().getName()) ? this.averageLatency : playerInfo.getLatency();
         Component component = Component.translatable("multiplayer.status.ping", latency);
-        guiGraphics.drawString(this.minecraft.font, component, x + columnWidth - this.minecraft.font.width(component), y, 0x00FF00);
+        guiGraphics.drawString(this.minecraft.font, component, x + columnWidth - this.minecraft.font.width(component), y, this.getColorForLatency(latency));
 
         return true;
+    }
+
+    private int getColorForLatency(int latency) {
+        if (latency >= 50 && latency <= 100) {
+            return 0xbde023;
+        }
+
+        if (latency >= 100 && latency <= 150) {
+            return 0xe0ae23;
+        }
+
+        if (latency > 150) {
+            return 0xff0000;
+        }
+
+        return 0x00ff00;
     }
 }
