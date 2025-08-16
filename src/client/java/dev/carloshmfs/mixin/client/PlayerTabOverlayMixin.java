@@ -7,6 +7,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerTabOverlay.class)
@@ -16,5 +17,10 @@ public class PlayerTabOverlayMixin {
 		if (PingOverlay.getInstance().render(guiGraphics, columnWidth, x, y, playerInfo)) {
 			info.cancel();
 		}
+	}
+
+	@ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"), index = 0)
+	private int overwriteTablistColumnWidth(int vanillaWidth) {
+		return vanillaWidth + PingOverlay.getInstance().pingColumnWidth;
 	}
 }
