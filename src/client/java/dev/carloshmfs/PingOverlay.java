@@ -1,34 +1,39 @@
 package dev.carloshmfs;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.PlayerListEntry;
 
 public class PingOverlay {
     public static final PingOverlay INSTANCE = new PingOverlay();
     public int averageLatency = 0;
     public final int pingColumnWidth;
 
-    private final Minecraft minecraft;
+    private final MinecraftClient minecraft;
 
     PingOverlay() {
-        this.minecraft = Minecraft.getInstance();
-        this.pingColumnWidth = this.minecraft.font.width(Component.translatable("multiplayer.status.ping", 999));
+        this.minecraft = MinecraftClient.getInstance();
+        this.pingColumnWidth = this.minecraft.textRenderer.getWidth(String.valueOf(999));
     }
 
     public static PingOverlay getInstance() {
         return INSTANCE;
     }
 
-    public boolean render(GuiGraphics guiGraphics, int columnWidth, int x, int y, final PlayerInfo playerInfo) {
+    public boolean render(DrawContext drawContext, int columnWidth, int x, int y, final PlayerListEntry playerListEntry) {
         if (this.minecraft.player == null) {
             return false;
         }
 
-        int latency = this.minecraft.player.getGameProfile().getName().equalsIgnoreCase(playerInfo.getProfile().getName()) ? this.averageLatency : playerInfo.getLatency();
-        Component component = Component.translatable("multiplayer.status.ping", latency);
-        guiGraphics.drawString(this.minecraft.font, component, x + columnWidth - this.minecraft.font.width(component), y, this.getColorForLatency(latency));
+        int latency = this.minecraft.player.getGameProfile().getName().equalsIgnoreCase(playerListEntry.getProfile().getName()) ? this.averageLatency : playerListEntry.getLatency();
+        drawContext.drawText(
+            this.minecraft.textRenderer,
+            String.valueOf(latency),
+            x + columnWidth - this.minecraft.textRenderer.getWidth(String.valueOf(latency)),
+            y,
+            this.getColorForLatency(latency),
+            true
+        );
 
         return true;
     }
