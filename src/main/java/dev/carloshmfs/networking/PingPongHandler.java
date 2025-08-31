@@ -43,7 +43,6 @@ public class PingPongHandler {
             latencyInfo.isPending = false;
             latencyInfo.RTT_QUEUE.add(latency);
             latencyInfo.calculateAverageLatency();
-            ProperPingfabric.LOGGER.info(player.getName().getString() + " PING: " + latencyInfo.averageLatency + "ms");
         }
     }
 
