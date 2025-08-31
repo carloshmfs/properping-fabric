@@ -3,6 +3,8 @@ package dev.carloshmfs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 
 public class PingOverlay {
     public static final PingOverlay INSTANCE = new PingOverlay();
@@ -13,7 +15,7 @@ public class PingOverlay {
 
     PingOverlay() {
         this.minecraft = MinecraftClient.getInstance();
-        this.pingColumnWidth = this.minecraft.textRenderer.getWidth(String.valueOf(999));
+        this.pingColumnWidth = this.minecraft.textRenderer.getWidth(Text.translatable("multiplayer.status.ping", 999));
     }
 
     public static PingOverlay getInstance() {
@@ -26,10 +28,11 @@ public class PingOverlay {
         }
 
         int latency = this.minecraft.player.getGameProfile().getName().equalsIgnoreCase(playerListEntry.getProfile().getName()) ? this.averageLatency : playerListEntry.getLatency();
+        MutableText latencyText = Text.translatable("multiplayer.status.ping", latency);
         drawContext.drawText(
             this.minecraft.textRenderer,
-            String.valueOf(latency),
-            x + columnWidth - this.minecraft.textRenderer.getWidth(String.valueOf(latency)),
+            latencyText,
+            x + columnWidth - this.minecraft.textRenderer.getWidth(latencyText),
             y,
             this.getColorForLatency(latency),
             true
